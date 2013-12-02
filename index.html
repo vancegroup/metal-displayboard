@@ -102,13 +102,9 @@
             });
 
             // Set up listener to try re-loading the slides each time we complete them.
-            Reveal.addEventListener( 'slidechanged', function( event ) {
-                // event.previousSlide, event.currentSlide, event.indexh, event.indexv
-                if (Reveal.isLastSlide()) {
-                    loadSlides(true, function() {Reveal.sync();})
-
-                }
-            } );
+            Reveal.addEventListener( 'checkupdates', function( event ) {
+                loadSlides(true, function() {Reveal.sync();})
+            }, false );
 		</script>
 
 	</body>
