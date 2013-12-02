@@ -36,79 +36,77 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>
-					<h1>Welcome to METaL</h1>
-					<h3>The Multimodal Experience Testbed and Laboratory</h3>
-					<p>
-						<small>Part of the Virtual Reality Applications Center</small>
-					</p>
-				</section>
-
-				<section>
-					<img src="localcontent/colorwithshadow_transparent_large.png" class="stretch" />
-				</section>
-
-				<section>
-					<h2>Spectacular image!</h2>
-					<a class="image" href="http://lab.hakim.se/meny/" target="_blank">
-						<img width="320" height="299" src="http://s3.amazonaws.com/hakim-static/portfolio/images/meny.png" alt="Meny">
-					</a>
-				</section>
-
-				<section>
-					<iframe src="http://academic.cleardefinition.com/reservations/mrbs/web/week.php?area=2&room=2" class="stretch" > </iframe>
-				</section>
-					
-				<section data-state="lastslide">
-				</section>
+				<!-- filled at runtime from slides.html -->
 			</div>
 
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.min.js"></script>
+		<script src="localcontent/jquery-1.10.2.min.js"></script>
 
 		<script>
 
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls: false,
-				progress: true,
-				loop: true,
-				center: true,
-				// Number of milliseconds between automatically proceeding to the
-                // next slide, disabled when set to 0, this value can be overwritten
-                // by using a data-autoslide attribute on your slides
-                autoSlide: 10000,
 
-                // Stop auto-sliding after user input
-                autoSlideStoppable: false,
+            function loadSlides(onlyIfModified, callback) {
+                $.ajax({
+                    url: "slides.html",
+                    dataType: "html",
+                    ifModified: onlyIfModified // only call success if true and document modified
+                })
+                .done(function(data) {
+                    $(".slides").html(data);
+                    callback()
+                });
+            }
 
-				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
-				
-				width: 1600,
-				height: 1200,
+            // Force load slides the first time
+            loadSlides(false, function() {
+                // Full list of configuration options available here:
+			    // https://github.com/hakimel/reveal.js#configuration
+			    Reveal.initialize({
+				    controls: false,
+				    progress: true,
+				    loop: true,
+				    center: true,
+				    // Number of milliseconds between automatically proceeding to the
+                    // next slide, disabled when set to 0, this value can be overwritten
+                    // by using a data-autoslide attribute on your slides
+                    autoSlide: 1000,
 
-				// Parallax scrolling
-				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
-				// parallaxBackgroundSize: '2100px 900px',
+                    // Stop auto-sliding after user input
+                    autoSlideStoppable: false,
 
-				// Optional libraries used to extend on reveal.js
-				dependencies: [
-					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					//{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					//{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-					//{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-				]
-			});
-			
-			Reveal.addEventListener( 'lastslide', function() {
-                window.location.reload()
-            }, false );
+				    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
 
+				    width: 1600,
+				    height: 1200,
+
+				    // Parallax scrolling
+				    // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				    // parallaxBackgroundSize: '2100px 900px',
+
+				    // Optional libraries used to extend on reveal.js
+				    dependencies: [
+					    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					    //{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					    //{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					    //{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				    ]
+			    });
+
+            });
+
+            // Set up listener to try re-loading the slides each time we complete them.
+            Reveal.addEventListener( 'slidechanged', function( event ) {
+                // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+                if (Reveal.isLastSlide()) {
+                    loadSlides(true, function() {Reveal.sync();})
+
+                }
+            } );
 		</script>
 
 	</body>
