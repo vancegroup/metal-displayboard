@@ -103,7 +103,9 @@
 
             // Set up listener to try re-loading the slides each time we complete them.
             Reveal.addEventListener( 'checkupdates', function( event ) {
-                loadSlides(true, function() {Reveal.sync();})
+                loadSlides(true, function() {Reveal.sync();});
+                // Awkward way of reloading the iframe each time through, but it should work.
+                $("#calendarframe").attr('src', $('#calendarframe').attr('src'));
             }, false );
 		</script>
 
